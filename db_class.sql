@@ -554,3 +554,66 @@ insert into child3(id,c1,c2,p_id) values(3,'ccc','ccc',3);
 -- 수정 쿼리
 update child3 set c1='수정 내용' where id=2;
 update child3 set c1='수정 내용', c2='ggg' where id=3;
+
+drop table if exists books;
+create table books(
+	id bigint auto_increment,
+    b_bookname varchar(20),
+    b_publisher varchar(10),
+    b_price bigint,
+    constraint pk_books primary key(id) 
+);
+drop table if exists customers;
+create table customers(
+	id bigint auto_increment,
+    c_name varchar(10),
+    c_address varchar(20),
+    c_phone varchar(30),
+    constraint pk_customers primary key(id)
+    
+);
+drop table if exists orders;
+create table orders(
+	id bigint primary key auto_increment,
+    customer_id bigint,
+    book_id bigint,
+    o_salprice bigint,
+    o_orderdate date,
+    foreign key(customer_id) references customers (id),
+    foreign key(book_id) references books (id)
+);
+select * from books;
+insert into books(b_bookname,b_publisher,b_price) values('축구 역사','좋은 출판사',7000); 
+insert into books(b_bookname,b_publisher,b_price) values('축구 리포트','나무 출판사',13000); 
+insert into books(b_bookname,b_publisher,b_price) values('축구를 알려주마','대한 출판사',22000); 
+insert into books(b_bookname,b_publisher,b_price) values('배구의 바이블','대한 출판사',35000); 
+insert into books(b_bookname,b_publisher,b_price) values('피겨 교과서','좋은 출판사',8000); 
+insert into books(b_bookname,b_publisher,b_price) values('피칭의 단계별 기술','좋은 출판사',6000); 
+insert into books(b_bookname,b_publisher,b_price) values('야구의 추억 이야기','나이스 미디어',20000); 
+insert into books(b_bookname,b_publisher,b_price) values('야구 읽어주는 남자','나이스 미디어',13000); 
+insert into books(b_bookname,b_publisher,b_price) values('올림픽 스토리','이야기당',7500); 
+insert into books(b_bookname,b_publisher,b_price) values('olympic history','strawberry',13000); 
+
+select * from customers;
+insert into customers(c_name,c_address,c_phone) values('손흥민','영국 런던','000-5000-0001');
+insert into customers(c_name,c_address,c_phone) values('김연아','대한민국 서울','000-6000-0001');
+insert into customers(c_name,c_address,c_phone) values('김연경','대한민국 서울','000-7000-0001');
+insert into customers(c_name,c_address,c_phone) values('류현진','캐나다 토론도','010-8000-0001');
+insert into customers(c_name,c_address,c_phone) values('이강인','프랑스 파리',null); 
+delete from customers where id=5;
+
+select * from orders;
+insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(1,1,6000,'2023-07-01');
+insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(1,3,21000,'2023-07-03');
+insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(2,5,8000,'2023-07-03');
+insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(3,6,6000,'2023-07-04');
+insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(4,7,20000,'2023-07-05');
+insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(1,2,12000,'2023-07-07');
+insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(4,8,13000,'2023-07-07');
+insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(3,10,12000,'2023-07-08');
+insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(2,10,7000,'2023-07-09'); 
+insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(3,8,13000,'2023-07-10');
+
+
+
+delete from customer where id=5;
