@@ -613,7 +613,7 @@ insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (4, 8, 
 insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (3, 10, 12000, str_to_date('2023-07-08','%Y-%m-%d')); 
 insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (2, 10, 7000, str_to_date('2023-07-09','%Y-%m-%d')); 
 insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (3, 8, 13000, str_to_date('2023-07-10','%Y-%m-%d')); 
-
+delete from orders where id=21;
 -- 1. 모든 도서의 가격과 도서명 조회 
 -- 2. 모든 출판사 이름 조회 
 -- 2.1 중복값을 제외한 출판사 이름 조회 
@@ -672,3 +672,50 @@ select count(distinct b_publisher) from books;
 select o_orderdate,id from orders where o_orderdate>='2023-07-04' and o_orderdate<='2023-07-07'; 
 -- 22. 7월 4일 ~ 7일 사이에 주문하지 않은 도서의 주문번호 조회
 select o_orderdate,id from orders where not(o_orderdate>='2023-07-04' and o_orderdate<='2023-07-07'); 
+
+
+-- 23. 고객, 주문 테이블 조인하여 고객번호 순으로 정렬
+
+select c.*, o.* 
+		from customers c, orders o
+			where c.id=o.customer_id
+				order by c.id asc;
+
+-- 24. 고객이름(CUSTOMER), 고객이 주문한 도서 가격(ORDERS) 조회 
+
+select c.c_name as '고객 이름', o.o_salprice as '도서 가격' 
+		from customers c, orders o
+			where c.id=o.customer_id;
+
+-- 25. 고객별(GROUP)로 주문한 도서의 총 판매액(SUM)과 고객이름을 조회하고 조회 결과를 가나다 순으로 정렬 
+
+select sum(o.o_salprice) as '총 판매액', c.c_name as '고객 이름' 
+		from customers c, orders o
+			where c.id=o.customer_id
+				group by o.customer_id 
+					order by c.c_name asc;
+
+-- 26. 고객명과 고객이 주문한 도서명을 조회(3테이블 조인)
+
+select c.c_name as '고객 이름', b.b_bookname as '도서 명'  
+		from customers c, orders o, books b
+			where o.customer_id=c.id and o.book_id=b.id;
+				
+-- 27. 2만원(SALEPRICE) 이상 도서를 주문한 고객의 이름과 도서명을 조회 
+
+select c.c_name as '고객 이름', b.b_bookname as '도서 명'
+	from orders o, customers c, books b
+		where c.id=o.customer_id and b.id=o.book_id
+			and o.o_salprice>=20000;
+
+-- 28. 손흥민 고객의 총 구매액과 고객명을 함께 조회
+
+select sum(o.o_salprice) as '총 구매액', c.c_name as '고객 이름'
+	from orders o, customers c, books b
+		where c.id=o.customer_id and b.id=o.book_id and c.c_name='손흥민';
+			
+-- 29. 손흥민 고객의 총 구매수량과 고객명을 함께 조회
+
+select count(*) as '구매 수량', c.c_name as '고객 명'
+	from orders o, customers c, books b
+		where c.id=o.customer_id and b.id=o.book_id and c.c_name='손흥민';
