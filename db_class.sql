@@ -603,17 +603,17 @@ insert into customers(c_name,c_address,c_phone) values('이강인','프랑스 �
 delete from customers where id=5;
 
 select * from orders;
-insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(1,1,6000,'2023-07-01');
-insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(1,3,21000,'2023-07-03');
-insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(2,5,8000,'2023-07-03');
-insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(3,6,6000,'2023-07-04');
-insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(4,7,20000,'2023-07-05');
-insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(1,2,12000,'2023-07-07');
-insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(4,8,13000,'2023-07-07');
-insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(3,10,12000,'2023-07-08');
-insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(2,10,7000,'2023-07-09'); 
-insert into orders(customer_id,book_id,o_salprice,o_orderdate) values(3,8,13000,'2023-07-10');
+insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (1, 1, 6000, str_to_date('2023-07-01','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (1, 3, 21000, str_to_date('2023-07-03','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (2, 5, 8000, str_to_date('2023-07-03','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (3, 6, 6000, str_to_date('2023-07-04','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (4, 7, 20000, str_to_date('2023-07-05','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (1, 2, 12000, str_to_date('2023-07-07','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (4, 8, 13000, str_to_date( '2023-07-07','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (3, 10, 12000, str_to_date('2023-07-08','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (2, 10, 7000, str_to_date('2023-07-09','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (3, 8, 13000, str_to_date('2023-07-10','%Y-%m-%d')); 
 
 
 
-delete from customer where id=5;
+delete from orders where id=11;
