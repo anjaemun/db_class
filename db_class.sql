@@ -446,3 +446,111 @@ select * from member8;
 -- auto_increment 지정하면 값을 따로 주지 않아도 됨
 insert into member8(member_email, member_password) values('bb@bb.com', '1234');
 insert into member8(member_email, member_password) values('aa@aa.com', '1234');
+
+
+-- 참조 관계(references relationship)
+drop table if exists parent1;
+create table parent1(
+	id bigint primary key,
+    p1 varchar(10),
+    p2 varchar(20)
+);
+-- foreign key 부모 테이블이 먼저 생성되어야 자식 테이블을 생성할 수 있음.
+-- 둘 다 생서되어 있을 때 부모 테이블을 먼저 삭제할 수 없음.(자식 테이블은 먼저 삭제 가능)`
+drop table if exists child1;
+create table child1(
+	id bigint primary key,
+    c1 varchar(10) not null unique,
+    c2 varchar(20) not null,
+    p_id bigint,
+    constraint fk_child1 foreign key(p_id) references parent1(id)
+);
+select * from parent1;
+insert into parent1(id,p1,p2) values(1,'aa','aa');
+insert into parent1(id,p1,p2) values(2,'bb','bb');
+insert into parent1(id,p1,p2) values(3,'cc','cc');
+insert into parent1(id,p1,p2) values(4,'dd','dd');
+
+select * from child1;
+insert into child1(id,c1,c2,p_id) values(1,'aaa','aaa',1);
+-- 부모 id 컬럼에 없는 값을 p_id 에 저장
+insert into child1(id,c1,c2,p_id) values(2,'bbb','bbb',2);
+insert into child1(id,c1,c2,p_id) values(3,'ccc','ccc',3);
+
+-- 부모 테이블의 데이터 삭제
+-- id가 2인 한 줄을 삭제
+-- 자식 테이블에 id=2인 데이터를 참조하는 부분이 있기 때문에 삭제할 수 없음.
+delete from parent1 where id=2;
+-- 자식 테이블에 id=4인 데이터를 참조하는 부분이 없기 때문에 삭제할 수 있음.
+delete from parent1 where id=4;
+-- 자식 테이블의 부모 id=2를 참조하는 데이터 삭제(자식 테이블부터 삭제하면 부모 테이블도 삭제 가능)
+delete from child1 where id=2;
+delete from parent1 where id=2;
+
+
+drop table if exists parent2;
+create table parent2(
+	id bigint primary key,
+    p1 varchar(10),
+    p2 varchar(20)
+);
+-- foreign key 부모 테이블이 먼저 생성되어야 자식 테이블을 생성할 수 있음.
+-- 둘 다 생서되어 있을 때 부모 테이블을 먼저 삭제할 수 없음.(자식 테이블은 먼저 삭제 가능)`
+drop table if exists child2;
+create table child2(
+	id bigint primary key,
+    c1 varchar(10),
+    c2 varchar(20),
+    p_id bigint,
+    -- 부모 데이터 삭제 시 자식 데이터도 삭제
+    constraint fk_child2 foreign key(p_id) references parent2(id) on delete cascade
+);
+
+select * from parent2;
+insert into parent2(id,p1,p2) values(1,'aa','aa');
+insert into parent2(id,p1,p2) values(2,'bb','bb');
+insert into parent2(id,p1,p2) values(3,'cc','cc');
+insert into parent2(id,p1,p2) values(4,'dd','dd');
+
+select * from child2;
+insert into child2(id,c1,c2,p_id) values(1,'aaa','aaa',1);
+-- 부모 id 컬럼에 없는 값을 p_id 에 저장
+insert into child2(id,c1,c2,p_id) values(2,'bbb','bbb',2);
+insert into child2(id,c1,c2,p_id) values(3,'ccc','ccc',3);
+
+delete from parent2 where id=3;
+
+drop table if exists parent3;
+create table parent3(
+	id bigint primary key,
+    p1 varchar(10),
+    p2 varchar(20)
+);
+-- foreign key 부모 테이블이 먼저 생성되어야 자식 테이블을 생성할 수 있음.
+-- 둘 다 생서되어 있을 때 부모 테이블을 먼저 삭제할 수 없음.(자식 테이블은 먼저 삭제 가능)`
+drop table if exists child3;
+create table child3(
+	id bigint primary key,
+    c1 varchar(10),
+    c2 varchar(20),
+    p_id bigint,
+    -- 부모 데이터 삭제 시 자식 데이터는 유지되지만 참조 컬럼은 null이 됨.
+    constraint fk_child3 foreign key(p_id) references parent3(id) on delete set null
+);
+
+select * from parent3;
+insert into parent3(id,p1,p2) values(1,'aa','aa');
+insert into parent3(id,p1,p2) values(2,'bb','bb');
+insert into parent3(id,p1,p2) values(3,'cc','cc');
+insert into parent3(id,p1,p2) values(4,'dd','dd');
+delete from parent3 where id=1;
+
+select * from child3;
+insert into child3(id,c1,c2,p_id) values(1,'aaa','aaa',1);
+-- 부모 id 컬럼에 없는 값을 p_id 에 저장
+insert into child3(id,c1,c2,p_id) values(2,'bbb','bbb',2);
+insert into child3(id,c1,c2,p_id) values(3,'ccc','ccc',3);
+
+-- 수정 쿼리
+update child3 set c1='수정 내용' where id=2;
+update child3 set c1='수정 내용', c2='ggg' where id=3;
