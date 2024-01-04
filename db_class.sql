@@ -614,6 +614,61 @@ insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (3, 10,
 insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (2, 10, 7000, str_to_date('2023-07-09','%Y-%m-%d')); 
 insert into orders(customer_id, book_id, o_salprice, o_orderdate) values (3, 8, 13000, str_to_date('2023-07-10','%Y-%m-%d')); 
 
+-- 1. 모든 도서의 가격과 도서명 조회 
+-- 2. 모든 출판사 이름 조회 
+-- 2.1 중복값을 제외한 출판사 이름 조회 
+-- 3. BOOK테이블의 모든 내용 조회 
+-- 4. 20000원 미만의 도서만 조회 
+-- 5. 10000원 이상 20000원 이하인 도서만 조회
+-- 6. 출판사가 좋은출판사 또는 대한출판사인 도서 조회 
+-- 7. 도서명에 축구가 포함된 모든 도서를 조회
+-- 8. 도서명의 두번째 글자가 구인 도서 조회
+-- 9. 축구 관련 도서 중 가격이 20000원 이상인 도서 조회
+-- 10. 책 이름순으로 전체 도서 조회
+-- 11. 도서를 가격이 낮은 것 부터 조회하고 같은 가격일 경우 도서명을 가나다 순으로 조회
 
+select b_bookname,b_price from books;
+select b_publisher from books;
+select distinct b_publisher from books;
+select * from books;
+select * from books where b_price<20000;
+select * from books where b_price>=10000 and b_price<=20000;
+select * from books where b_publisher='좋은 출판사' or b_publisher='대한 출판사';
+select * from books where b_publisher in('좋은 출판사','대한 출판사');
+select * from books where b_bookname like '%축구%';
+select * from books where b_bookname like '_구%';
+select * from books where b_bookname like '%축구%' and b_price>=20000;
+select * from books order by b_bookname asc;
+select * from books order by b_price, b_bookname asc;
 
-delete from orders where id=11;
+-- 12. 주문 도서의 총 판매액 조회 
+select sum(o_salprice) from orders;
+-- 13. 1번 고객이 주문한 도서 총 판매액 조회 
+select sum(o_salprice) from orders where customer_id=1;
+-- 14. ORDERS 테이블로 부터 평균판매가, 최고판매가, 최저판매가 조회 
+select avg(o_salprice), max(o_salprice),min(o_salprice) from orders;
+-- 15. 고객별로 주문한 도서의 총 수량과 총 판매액 조회 (GROUP BY 활용)
+select customer_id,count(*),sum(o_salprice) from orders group by customer_id;
+-- 16. 가격이 8,000원 이상인 도서를 구매한 고객에 대해 고객별 주문 도서의 총 수량 조회 (GROUP BY 활용)
+--    (단, 8,000원 이상 도서 두 권 이상 구매한 고객만) 
+select customer_id,count(*) from orders where o_salprice>=8000 group by customer_id having count(*)>=2;
+-- 17. 김연아고객(고객번호 : 2) 총 구매액
+select sum(o_salprice) from orders where customer_id=2;
+
+select sum(o.o_salprice) as '구매금액' from orders o, customers c
+		where o.customer_id=c.id
+			and c.c_name='김연아';
+-- 18. 김연아고객(고객번호 : 2)이 구매한 도서의 수
+select count(*) from orders where customer_id=2;
+
+select count(*) as '구매 수' from orders o, customers c
+		where o.customer_id=c.id
+			and c.c_name='김연아';
+-- 19. 서점에 있는 도서의 총 권수
+select count(b_bookname) from books;
+-- 20. 출판사의 총 수 
+select count(distinct b_publisher) from books;
+-- 21. 7월 4일 ~ 7일 사이에 주문한 도서의 주문번호 조회 
+select o_orderdate,id from orders where o_orderdate>='2023-07-04' and o_orderdate<='2023-07-07'; 
+-- 22. 7월 4일 ~ 7일 사이에 주문하지 않은 도서의 주문번호 조회
+select o_orderdate,id from orders where not(o_orderdate>='2023-07-04' and o_orderdate<='2023-07-07'); 
