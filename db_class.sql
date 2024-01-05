@@ -689,10 +689,10 @@ select c.c_name as '고객 이름', o.o_salprice as '도서 가격'
 
 -- 25. 고객별(GROUP)로 주문한 도서의 총 판매액(SUM)과 고객이름을 조회하고 조회 결과를 가나다 순으로 정렬 
 
-select sum(o.o_salprice) as '총 판매액', c.c_name as '고객 이름' 
+select c.c_name as '고객 이름' , sum(o.o_salprice) as '총 판매액'
 		from customers c, orders o
 			where c.id=o.customer_id
-				group by o.customer_id 
+				group by c.c_name 
 					order by c.c_name asc;
 
 -- 26. 고객명과 고객이 주문한 도서명을 조회(3테이블 조인)
@@ -710,12 +710,12 @@ select c.c_name as '고객 이름', b.b_bookname as '도서 명'
 
 -- 28. 손흥민 고객의 총 구매액과 고객명을 함께 조회
 
-select sum(o.o_salprice) as '총 구매액', c.c_name as '고객 이름'
+select c.c_name as '고객 이름', sum(o.o_salprice) as '총 구매액'
 	from orders o, customers c, books b
-		where c.id=o.customer_id and b.id=o.book_id and c.c_name='손흥민';
+		where c.id=o.customer_id and c.c_name='손흥민';
 			
 -- 29. 손흥민 고객의 총 구매수량과 고객명을 함께 조회
 
-select count(*) as '구매 수량', c.c_name as '고객 명'
-	from orders o, customers c, books b
-		where c.id=o.customer_id and b.id=o.book_id and c.c_name='손흥민';
+select c.c_name as '고객 명', count(*) as '구매 수량'
+	from orders o, customers c
+		where c.id=o.customer_id and c.c_name='손흥민';
