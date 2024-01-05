@@ -719,3 +719,57 @@ select c.c_name as '고객 이름', sum(o.o_salprice) as '총 구매액'
 select c.c_name as '고객 명', count(*) as '구매 수량'
 	from orders o, customers c
 		where c.id=o.customer_id and c.c_name='손흥민';
+        
+-- 30. 가장 비싼 도서의 이름을 조회 
+select b_bookname, b_price from books where b_price=(select max(b_price) from books);
+-- 31. 책을 구매한 이력이 있는 고객의 이름을 조회
+select c_name from customers where id in (select customer_id from orders);
+-- 32. 도서의 가격(PRICE)과 판매가격(SALEPRICE)의 차이가 가장 많이 나는 주문 조회 
+select * from orders o, books b 
+	where o.book_id=b.id AND b.b_price-o.o_salprice = (
+	select max(b.b_price-o.o_salprice)
+		from books b, orders o
+			where b.id = o.book_id);
+-- 33. 고객별 평균 구매 금액이 도서의 판매 평균 금액 보다 높은 고객의 이름 조회 
+select c.c_name as '고객 명', round(avg(o.o_salprice),2) as '평균 구매가' from customers c, orders o 
+	where c.id = o.customer_id group by c.c_name  
+		having avg(o.o_salprice)>(select avg(o_salprice) from orders);
+
+-- 34. 고객번호가 5인 고객의 주소를 대한민국 인천으로 변경 
+update customers 
+	SET c_address = '대한민국 인천'
+    where id=5;
+
+-- 35. 김씨 성을 가진 고객이 주문한 총 판매액 조회
+select sum(o.o_salprice) from orders o, customers c
+	where c.c_name 
+		like '김%' and c.id=o.customer_id ;  
+        
+select sum(o_salprice) from orders where customer_id in(select id from customers where c_name like '%김__');
+
+
+-- alter : 테이블의 구조를 변경할 때(컴럼이름, 타입 변경, 컬럼 삭제, 제약조건 추가 등)
+create table student(
+	id bigint,
+    s_name varchar(20),
+    s_mobile int
+);        
+
+-- 테이블 구조 확인
+desc student;
+desc books;
+
+-- 기존 컬럼에 제약 조건 추가
+alter table student add constraint primary key(id);
+
+-- 기존 컬럼 타입 변경 
+alter table student modify s_mobile varchar(30);
+
+-- 컬럼 추가
+alter table student add s_major varchar(30);
+
+-- 컬럼 이름 변경
+alter table student change s_mobile s_phone varchar(30);
+
+-- 컬럼 삭제
+alter table student drop s_major;
