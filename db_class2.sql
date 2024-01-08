@@ -173,3 +173,25 @@ select * from board_table where board_title like '%오늘%' order by id asc;
 select * from board_table where board_title like '%오늘%' order by id desc;
 -- 8.3 검색결과 페이징 처리 
 select * from board_table where board_title like '%오늘%' order by board_hits desc limit 0,3;
+
+
+-- 댓글 기능 
+-- 1. 댓글 작성 
+insert into comment_table(comment_writer, comment_contents) values('aa','aa');
+insert into comment_table(comment_writer, comment_contents) values('bb','bb');
+-- 1.1. 1번 회원이 1번 게시글에 댓글 작성 
+insert into comment_table(comment_writer, comment_contents, board_id, member_id) values('bb','bb',1,1);
+-- 1.2. 2번 회원이 1번 게시글에 댓글 작성 
+insert into comment_table(comment_writer, comment_contents, board_id, member_id) values('bb','bb',1,2);
+-- 2. 댓글 조회
+select * from comment_table;
+-- 3. 댓글 좋아요 
+-- 3.1. 1번 회원이 2번 회원이 작성한 댓글에 좋아요 클릭
+insert into good_table(member_id, comment_id) values(1,2);
+insert into good_table(member_id, comment_id) values(2,1);
+-- 3.2. 3번 회원이 2번 회원이 작성한 댓글에 좋아요 클릭 
+insert into good_table(member_id, comment_id) values(3,2);
+-- 4. 댓글 조회시 좋아요 갯수도 함께 조회
+select c.*, g.* 
+	 from comment_table c, good_table g
+		where c.id = g.comment_id;
