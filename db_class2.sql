@@ -90,3 +90,83 @@ select * from member_table where id=1;
 	update member_table set member_password = '1234'  where id=1; 
 -- 7. 회원 삭제 또는 탈퇴 
 delete from member_table where id=3;
+
+
+-- 게시글 카테고리 
+-- 게시판 카테고리는 자유게시판, 공지사항, 가입인사 세가지가 있음.
+-- 카테고리 세가지 미리 저장
+insert into category_table(category_name) values('공지사항');
+insert into category_table(category_name) values('자유게시판');
+insert into category_table(category_name) values('가입인사');
+-- 게시판 기능 
+-- 1. 게시글 작성(파일첨부 x) 3개 이상 
+insert into board_table(board_title, board_writer, board_contents)
+	values('aa', 'aa@aa.com', 'aa');
+insert into board_table(board_title, board_writer, board_contents)
+	values('bb', 'bb@bb.com', 'bb');
+insert into board_table(board_title, board_writer, board_contents)
+	values('cc', 'cc@cc.com', 'cc');
+-- 1번 회원이 자유게시판 글 2개, 공지사항 글 1개 작성 
+insert into board_table(board_title, board_writer, board_contents, category_id, member_id)
+	values('aa', 'aa@aa.com', 'aa', '2', '1');
+insert into board_table(board_title, board_writer, board_contents, category_id, member_id)
+	values('bb', 'aa@aa.com', 'bb', '2', '1');
+insert into board_table(board_title, board_writer, board_contents, category_id, member_id)
+	values('aaa', 'aa@aa.com', 'cc', '1', '1');
+-- 2번 회원이 자유게시판 글 3개 작성
+insert into board_table(board_title, board_writer, board_contents, category_id, member_id)
+	values('dd', 'bb@bb.com', 'aa', '2', '2');
+insert into board_table(board_title, board_writer, board_contents, category_id, member_id)
+	values('ee', 'bb@bb.com', 'bb', '2', '2');
+insert into board_table(board_title, board_writer, board_contents, category_id, member_id)
+	values('ff', 'bb@bb.com', 'cc', '2', '2');
+-- 3번 회원이 가입인사 글 1개 작성 
+insert into board_table(board_title, board_writer, board_contents, category_id, member_id)
+	values('aa', 'cc@cc.com', 'aa', '3', '3');
+-- 1.1. 게시글 작성(파일첨부 o)
+insert into board_table(board_title, board_writer, board_contents, board_file_attached)
+	values('aa', 'cc@cc.com', 'aa', '1');
+-- 2번 회원이 파일있는 자유게시판 글 2개 작성
+insert into board_table(board_title, board_writer, board_contents, board_file_attached, category_id, member_id)
+	values('aa', 'bb@bb.com', 'aa', '1', '2', '2');
+insert into board_file_table(original_file_name, stored_file_name, board_id)
+	values('한라산.jpg', '2234989874898_한라산.jpg', '15');
+-- 첨부된 파일정보를 board_file_table에 저장
+-- 사용자가 저장한 파일 이름 : 한라산.jpg _
+insert into board_table(board_title, board_writer, board_contents, board_file_attached, category_id, member_id)
+	values('bb', 'bb@bb.com', 'bb', '1', '2', '2');
+insert into board_file_table(original_file_name, stored_file_name, board_id)
+	values('음식.jpg', '2234989874899_음식.jpg', '16');
+-- 2. 게시글 목록 조회 
+-- 2.1 전체글 목록 조회
+select * from board_table;
+-- 2.2 자유게시판 목록 조회 
+select * from board_table where category_id = 2;
+-- 2.3 공지사항 목록 조회 
+select * from board_table where category_id = 1;
+-- 2.4 목록 조회시 카테고리 이름도 함께 나오게 조회
+select distinct * from board_table b, category_table c where category_name like '%';
+-- 3. 2번 게시글 조회 (조회수 처리 필요함)
+select * from board_table where id = '2';
+update board_table set board_hits = board_hits + 1 where id = 2;
+-- 3.1. 파일 첨부된 게시글 조회 (게시글 내용과 파일을 함께)
+update board_table set board_hits = board_hits + 1 where id = 15;
+-- 게시글 내용만 가져옴
+select * from board_table where id = 15;
+-- 해당 게시글에 첨부된 파일 정보 가져옴
+select * from board_file_table where id = 15;
+-- join
+select * from board_table b, board_file_table bf where b.id = bf.board_id and id = 15;
+-- 4. 1번 회원이 자유게시판에 첫번째로 작성한 게시글의 제목, 내용 수정
+select *from board_table where id = 1;
+update board_table set board_title = '안녕하십니까_수정', board_contents = '월요일 사라져라' where id = 1;
+-- 5. 2번 회원이 자유게시판에 첫번째로 작성한 게시글 삭제 
+delete from board_table where id = 5;
+-- 7. 페이징 처리(한 페이지당 글 3개씩)
+-- 7.1. 첫번째 페이지
+-- 7.2. 두번째 페이지
+-- 7.3. 세번째 페이지 
+-- 8. 검색(글제목 기준)
+-- 8.1 검색결과를 오래된 순으로 조회 
+-- 8.2 검색결과를 조회수 내림차순으로 조회 
+-- 8.3 검색결과 페이징 처리 
